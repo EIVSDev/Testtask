@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/text_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/text_email"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:clickable="true" />
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/text_fhone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:clickable="true" />
+
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        tools:ignore="WebViewLayout">
+
+    </WebView>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        tools:context="com.mycompany.testtask.UserInformationScreen" />
+</LinearLayout>
