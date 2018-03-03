@@ -1,15 +1,21 @@
 package com.mycompany.testtask;
+
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -17,7 +23,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     FragmentManager fragmentManager;
-    public static String LOG_TAG = "my_log";
     private ListView listView;
     private List<ContactPOJO> contactList;
     private ContactAdapter adapter;
@@ -34,11 +39,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
-                    Log.e("Coord",contactList.get(position).getEmail()
-                       );
-
-
                 Intent i = new Intent(MainActivity.this, UserInformationScreen.class);
                 i.putExtra("longitude", contactList.get(position).getAddress().getGeo().getLng());
                 i.putExtra("latitude", contactList.get(position).getAddress().getGeo().getLat());
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra("fhone",contactList.get(position).getPhone());
                 i.putExtra("web",contactList.get(position).getWebsite());
                 startActivity(i);
-
             }
         });
 
@@ -60,9 +59,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
 
             ApiService api = RetroClient.getApiService();
-
             Call<List<ContactPOJO>> call = api.getMyGSON();
-
             call.enqueue(new Callback<List<ContactPOJO>>() {
 
                 @Override
@@ -71,13 +68,21 @@ public class MainActivity extends AppCompatActivity {
                     dialog.dismiss();
 
                     if (response.isSuccessful()) {
-                           Log.e("RESON","SUCces");
+                            contactList = response.body();
 
-                        contactList = response.body();
-                        adapter = new ContactAdapter(MainActivity.this, contactList);
-                        listView.setAdapter(adapter);
+                        try {
+                            FileOutputStream fileOutput = getApplicationContext().openFileOutput("example.txt", MODE_PRIVATE);
+                            ObjectOutputStream os = new ObjectOutputStream(fileOutput);
+                                os.writeObject(contactList);
+                                os.close();
+                                fileOutput.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                            adapter = new ContactAdapter(MainActivity.this, contactList);
+                            listView.setAdapter(adapter);
                     } else {
-                        Toast.makeText(getApplicationContext(), "Ошибка, данные не получены", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
                     }
                 }
                 @Override
@@ -85,11 +90,27 @@ public class MainActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             });
-
         } else {
-            Toast.makeText(getApplicationContext(), "Нет сети", Toast.LENGTH_LONG).show();
+            read();
         }
+    }
 
+    void read(){
+        try {
+            FileInputStream fis = getApplicationContext().openFileInput("example.txt");
+            ObjectInputStream is = new ObjectInputStream(fis);
+            Object one = is.readObject();
+            contactList = (List<ContactPOJO>)one;
+            is.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        adapter = new ContactAdapter(MainActivity.this, contactList);
+        listView.setAdapter(adapter);
+        Toast.makeText(getApplicationContext(), "Нет сети", Toast.LENGTH_LONG).show();
     }
 
     private void runSplash() {

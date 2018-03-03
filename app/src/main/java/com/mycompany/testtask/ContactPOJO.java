@@ -2,11 +2,13 @@ package com.mycompany.testtask;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Slava on 26.02.2018.
  */
 
-    public class ContactPOJO {
+    public class ContactPOJO implements Serializable{
 
     @SerializedName("id")
     @Expose
@@ -99,7 +101,7 @@ import com.google.gson.annotations.SerializedName;
 //////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////
 
-    public class Company {
+    public class Company implements Serializable{
 
         @SerializedName("name")
         @Expose
@@ -139,7 +141,7 @@ import com.google.gson.annotations.SerializedName;
 ////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
-    public class Address {
+    public class Address implements Serializable{
 
         @SerializedName("street")
         @Expose
@@ -199,7 +201,7 @@ import com.google.gson.annotations.SerializedName;
 
         /////////////////////////////////////////////////////////////////////
 
-        public class Geo {
+        public class Geo implements Serializable{
 
             @SerializedName("lat")
             @Expose
