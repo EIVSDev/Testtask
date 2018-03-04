@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
          fragmentManager=getFragmentManager();
          runSplash();
 
+           contactList = new ArrayList<>();
            listView = (ListView) findViewById(R.id.listView);
            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -110,7 +112,13 @@ public class MainActivity extends AppCompatActivity {
         }
         adapter = new ContactAdapter(MainActivity.this, contactList);
         listView.setAdapter(adapter);
-        Toast.makeText(getApplicationContext(), "Нет сети", Toast.LENGTH_LONG).show();
+        if(contactList.size()==0){
+        Toast.makeText(getApplicationContext(), "При первом запуске приложения необходимо подключение к сети!",
+                Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Нет сети", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void runSplash() {
